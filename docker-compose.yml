@@ -1,0 +1,29 @@
+version: '3'
+services:
+  web:
+    image: node:14 # Use an official Node.js image
+    mem_limit: 512m # Limit memory usage to 512MB
+    working_dir: /razzak/node/app
+    volumes:
+      - ./app:/razzak/node/app # Mount local directory into the container
+    ports:
+      - "3000:3000" # Map host port 3000 to container port 3000
+    environment:
+      NODE_ENV: production
+    depends_on:
+      - db # Ensure the database container starts first
+    command: npm start # Command to start your Node.js application
+
+  db:
+    image: postgres:13 # Use an official PostgreSQL image
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: students
+    ports:
+      - "5432:5432" # Map host port 5432 to container port 5432
+    volumes:
+      - pg-data:/var/lib/postgresql/data # Persist PostgreSQL data
+
+volumes:
+  pg-data: # Define a named volume for PostgreSQL data
