@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Student Details</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h3>Edit Student Details</h3>
+     <form id="editStudentForm">
+        <input type="hidden" id="studentId" name="studentId">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br>
+        <label for="age">Age:</label>
+        <input type="text" id="age" name="age"><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email"><br>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone"><br>
+        <label for="department">Department:</label>
+        <input type="text" id="department" name="department"><br>
+        <label for="semester">Semester:</label>
+        <input type="text" id="semester" name="semester"><br>
+        <button type="submit">Update</button>
+    </form>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('id');
+
+        axios.get(`http://localhost:3001/api/v1/students/${studentId}`)
+            .then(response => {
+                const student = response.data.results;
+                document.getElementById('studentId').value = student.id;
+                document.getElementById('name').value = student.name;
+                document.getElementById('age').value = student.age;
+                document.getElementById('email').value = student.email;
+                document.getElementById('phone').value = student.phone;
+                document.getElementById('department').value = student.department;
+                document.getElementById('semester').value = student.semester;
+            })
+            .catch(error => {
+                console.error('Error fetching student details:', error);
+            });
+
+        document.getElementById('editStudentForm').addEventListener('submit', event => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+
+            axios.put(`http://localhost:3001/api/v1/students/${studentId}`, formObject)
+                .then(() => {
+                    alert('Student details updated successfully');
+                    window.location.href = 'index.html';
+                 })
+                .catch(error => {
+                    console.error('Error updating student details:', error);
+                });
+        });
+    </script>
+</body>
+</html>
