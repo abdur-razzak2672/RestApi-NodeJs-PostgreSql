@@ -4,7 +4,8 @@ const client = require('./redis-connection.js');
 const app = express();
 const port = 3001;
 const cors = require('cors');
-   app.use(cors());
+const amqp = require('amqplib/callback_api.js');
+  app.use(cors());
 
 app.use(express.json());
 app.use("/api/v1/students", studentRouter);
@@ -17,25 +18,37 @@ app.get('/clear-cache', async (req, res) => {
   res.send('Cache cleared');
 });
 
-   
+const queue = "product_inventory";
+const text = {
+  item_id: "macbook",
+  text: "hello Razzak",
+};
+(async () => {
+  let connection;
+  try {
+    connection = await amqp.connect("amqp://localhost");
+    const channel = await connection.createChannel();
+
+    await channel.assertQueue(queue, { durable: false });
+    channel.sendToQueue(queue, Buffer.from(JSON.stringify(text)));
+    console.log(" [x] Sent '%s'", text);
+    await channel.close();
+  } catch (err) {
+    console.warn(err);
+  } finally {
+    if (connection) await connection.close();
+  }
+})();
+
+
+
+
+
+
 app.listen(port, () => {
   console.log(`Server is running on:${port}`);
   console.log(`Press CTRL + C to stop server`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
