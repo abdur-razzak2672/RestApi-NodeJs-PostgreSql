@@ -168,8 +168,6 @@ const updateStudent = (res, req) => {
         res.status(200).json({ status: 'success', message: `Successfully Updated Student`, results: results.rows, statusCode: 200 });
     })
 }
-
-
 const deleteStudent = async (res, req) => {
     const id = parseInt(req.params.id);
 
@@ -186,10 +184,7 @@ const deleteStudent = async (res, req) => {
             const updatedStudents = students.filter(student => student.id !== id);
             await client.set('students', JSON.stringify(updatedStudents));
             res.status(200).json({ status: 'success', message: `Successfully Deleted Student`, results: results.rows, statusCode: 200 });
-
         }
-
-
     })
 }
 
