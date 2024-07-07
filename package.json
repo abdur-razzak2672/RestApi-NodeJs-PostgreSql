@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "nodemon": "^3.1.4"
+  }
+}
